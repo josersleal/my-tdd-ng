@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'app-homes',
@@ -6,10 +7,27 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./homes.component.scss']
 })
 export class HomesComponent implements OnInit {
-
+  public homes$: any;
   constructor() { }
 
   ngOnInit() {
+    this.homes$ = of([
+      {
+        title: 'Home 1',
+        image: 'assets/listing1.jpg',
+        location: 'New York'
+      },
+      {
+        title: 'Home 2',
+        image: 'assets/listing1.jpg',
+        location: 'Boston'
+      },
+      {
+        title: 'Home 3',
+        image: 'assets/listing1.jpg',
+        location: 'Chicago'
+      }
+    ])
   }
 
 }

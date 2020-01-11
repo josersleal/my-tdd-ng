@@ -1,5 +1,8 @@
 <div>
-  <div data-test="home">Home 1</div>
-  <div data-test="home">Home 2</div>
-  <div data-test="home">Home 3</div>
+  <div data-test="home" *ngFor="let home of homes$ | async">
+    <div data-text="title">{{home.title}}</div>
+    <div data-text="image">{{home.image}}</div>
+    <div data-text="location">{{home.location}}</div>
+  </div>
+
 </div>
