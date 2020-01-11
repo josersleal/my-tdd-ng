@@ -20,8 +20,16 @@ describe('HomesComponent', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
+  describe('When starting', () => {
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+    it('should create', () => {
+      expect(component).toBeTruthy();
+    });
+
+    fit('Then shows homes', () => {
+      const elHome = fixture.nativeElement.querySelectorAll('[data-test="home"]');
+
+      expect(elHome.length).toBe(3);
+    });
   });
 });

@@ -3,9 +3,9 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "npm run start",
     "build": "ng build",
-    "test": "ng test",
+    "test": "npm run test",
     "lint": "ng lint",
     "e2e": "ng e2e"
   },
