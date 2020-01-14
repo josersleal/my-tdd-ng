@@ -1,14 +1,15 @@
 import { Injectable } from '@angular/core';
 import { of } from 'rxjs/internal/observable/of';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DataService {
 
-  constructor() { }
+  constructor(private httpClient: HttpClient) { }
 
   getHomes$(): any {
-    return of([]);
+    return this.httpClient.get<any>('assets/homes.json');
   }
 }
