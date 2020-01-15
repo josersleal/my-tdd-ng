@@ -5,6 +5,7 @@ import { AppComponent } from './app.component';
 import { HomesComponent } from './src/components/homes/homes.component';
 import { HeaderComponent } from './src/components/header/header.component';
 import { DataComponent } from './src/services/data/data.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -14,7 +15,8 @@ import { DataComponent } from './src/services/data/data.component';
     DataComponent
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]
