@@ -5,6 +5,7 @@ import { HomesComponent } from './homes.component';
 import { spyOnClass } from 'jasmine-es6-spies';
 import { DataService } from '../../services/data.service';
 import { of } from 'rxjs/internal/observable/of';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('HomesComponent', () => {
   let component: HomesComponent;
@@ -16,7 +17,8 @@ describe('HomesComponent', () => {
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
       declarations: [HomesComponent],
-      providers: [DataService]
+      providers: [DataService],
+      imports: [HttpClientTestingModule]
       // providers: [{ provide: DataService, useFactory: () => spyOnClass(DataService) }]
     })
       .compileComponents();
