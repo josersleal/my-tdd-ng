@@ -88,5 +88,13 @@ describe('HomesComponent', () => {
       expect(location.innerText).toContain('New York');
     });
 
+    it('Then it shows a booking button', () => {
+
+      const elHome = fixture.nativeElement.querySelector('[data-test="home"]');
+      const btn = elHome.querySelector('[data-test="book-btn"]');
+
+      expect(btn).toBeTruthy();
+    });
+
   });
 });
