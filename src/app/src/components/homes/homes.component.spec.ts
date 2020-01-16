@@ -7,6 +7,8 @@ import { DataService } from '../../services/data.service';
 import { of } from 'rxjs/internal/observable/of';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { DialogService } from '../../services/dialog.service';
+import { FormsModule } from '@angular/forms';
+import { MatDialogModule } from '@angular/material/dialog';
 
 describe('HomesComponent', () => {
   let component: HomesComponent;
@@ -20,7 +22,7 @@ describe('HomesComponent', () => {
       schemas: [NO_ERRORS_SCHEMA],
       declarations: [HomesComponent],
       providers: [DataService, DialogService],
-      imports: [HttpClientTestingModule]
+      imports: [HttpClientTestingModule, MatDialogModule]
       // providers: [{ provide: DataService, useFactory: () => spyOnClass(DataService) }]
     })
       .compileComponents();
@@ -48,6 +50,7 @@ describe('HomesComponent', () => {
         location: 'Chicago'
       }
     ];
+    homeData = require('../../../../assets/homes.json')
     spyOn(dataService, 'getHomes$').and.returnValue(of(homeData));
     spyOn(dialogService, 'open').and.stub();
     fixture.detectChanges();
@@ -87,8 +90,6 @@ describe('HomesComponent', () => {
       const image = elHome.querySelector('[data-test="image"]');
       expect(image).toBeTruthy();
       const location = elHome.querySelector('[data-test="location"]');
-      debugger;
-
       expect(location.innerText).toContain('New York');
     });
 
@@ -100,7 +101,7 @@ describe('HomesComponent', () => {
       expect(btn).toBeTruthy();
     });
 
-    fdescribe('When clicking the  Book button', () => {
+    describe('When clicking the  Book button', () => {
       it('Then it shows a dialog  ', () => {
 
         // Arrange
