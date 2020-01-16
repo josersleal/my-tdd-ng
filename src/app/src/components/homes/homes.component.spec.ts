@@ -33,24 +33,8 @@ describe('HomesComponent', () => {
     component = fixture.componentInstance;
     dataService = TestBed.get(DataService);
     dialogService = TestBed.get(DialogService);
-    homeData = [
-      {
-        title: 'Home 1',
-        image: 'assets/listing.jpg',
-        location: 'New York'
-      },
-      {
-        title: 'Home 2',
-        image: 'assets/listing.jpg',
-        location: 'Boston'
-      },
-      {
-        title: 'Home 3',
-        image: 'assets/listing.jpg',
-        location: 'Chicago'
-      }
-    ];
-    homeData = require('../../../../assets/homes.json')
+
+    homeData = require('../../../../assets/homes.json');
     spyOn(dataService, 'getHomes$').and.returnValue(of(homeData));
     spyOn(dialogService, 'open').and.stub();
     fixture.detectChanges();

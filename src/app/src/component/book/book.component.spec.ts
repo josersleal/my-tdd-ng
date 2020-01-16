@@ -1,25 +1,42 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { BookComponent } from './book.component';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormsModule } from '@angular/forms';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { spyOnClass } from 'jasmine-es6-spies';
 
+import { DataService } from '../../services/data.service';
+import { BookComponent } from './book.component';
+import { DialogService } from '../../services/dialog.service';
+
+
+export class MatDialogRefMock {
+  close = (params = '') => { }
+}
 describe('BookComponent', () => {
   let component: BookComponent;
   let fixture: ComponentFixture<BookComponent>;
   let dialogData: any;
+  let dataService: DataService;
+  let dialogService: jasmine.SpyObj<MatDialogRef<BookComponent>>;
+  // let dialogService: MatDialogRef<BookComponent>;
 
-  const el = (selector) => fixture.nativeElement.querySelector(selector);
+
+  const el = (selector: string) => fixture.nativeElement.querySelector(selector);
 
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [BookComponent],
-      imports: [FormsModule],
+      imports: [FormsModule, HttpClientTestingModule],
       providers: [
         {
           provide: MAT_DIALOG_DATA, useValue: {}
-        }
+        },
+        { provide: MatDialogRef, useFactory: () => spyOnClass(MatDialogRef) },
+        /*   {
+            provide: MatDialogRef, useClass: MatDialogRefMock
+          }, */
+        DataService
       ]
     })
       .compileComponents();
@@ -31,6 +48,11 @@ describe('BookComponent', () => {
     dialogData = TestBed.get(MAT_DIALOG_DATA);
     const homeData = require('../../../../assets/homes.json');
     dialogData.home = homeData[0];
+    dataService = TestBed.get(DataService);
+    dialogService = TestBed.get(MatDialogRef);
+    spyOn(dataService, 'bookHome$').and.stub();
+    // spyOn(dialogService, 'close').and.stub();
+
     fixture.detectChanges();
   });
 
@@ -92,7 +114,55 @@ describe('BookComponent', () => {
 
     });
 
-    // Then clicking button book books a home
+    it('Then clicking button book books a home', () => {
+
+      // Arrange
+      const checkIn = el('[data-test="check-in"] input');
+      const checkOut = el('[data-test="check-out"] input');
+
+      // Act
+      // enter check in 12/20/19
+      checkIn.value = '12/20/19';
+      checkIn.dispatchEvent(new Event('input'));
+      fixture.detectChanges();
+      // enter check out 12/23/19
+      checkOut.value = '12/23/19';
+      checkOut.dispatchEvent(new Event('input'));
+      fixture.detectChanges();
+      // Click the button
+      el('[data-test="btn-book"] button').click();
+
+      // Assert
+      // data service is called to book the home chosen
+
+      expect(dataService.bookHome$).toHaveBeenCalled();
+
+    });
+
+    it('Then clicking button book closes the dialog', () => {
+
+      // Arrange
+      const checkIn = el('[data-test="check-in"] input');
+      const checkOut = el('[data-test="check-out"] input');
+
+      // Act
+      // enter check in 12/20/19
+      checkIn.value = '12/20/19';
+      checkIn.dispatchEvent(new Event('input'));
+      fixture.detectChanges();
+      // enter check out 12/23/19
+      checkOut.value = '12/23/19';
+      checkOut.dispatchEvent(new Event('input'));
+      fixture.detectChanges();
+      // Click the button
+      el('[data-test="btn-book"] button').click();
+
+      // Assert
+      // data service is called to book the home chosen
+
+      expect(dialogService.close).toHaveBeenCalled();
+
+    });
   });
 
 

@@ -12,4 +12,8 @@ export class DataService {
   getHomes$(): any {
     return this.httpClient.get<any>('assets/homes.json');
   }
+
+  bookHome$(home: any) {
+    return of([]); // this.httpClient.post('https://www.mocky.io/v2/5185415ba171ea3a00704eed', {});
+  }
 }
