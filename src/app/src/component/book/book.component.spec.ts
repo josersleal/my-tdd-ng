@@ -1,14 +1,14 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { spyOnClass } from 'jasmine-es6-spies';
+import { of } from 'rxjs/internal/observable/of';
 
 import { DataService } from '../../services/data.service';
 import { BookComponent } from './book.component';
-import { DialogService } from '../../services/dialog.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { of } from 'rxjs/internal/observable/of';
 
 
 export class MatDialogRefMock {
@@ -43,7 +43,8 @@ describe('BookComponent', () => {
             provide: MatDialogRef, useClass: MatDialogRefMock
           }, */
         // DataService
-      ]
+      ],
+      schemas: [NO_ERRORS_SCHEMA]
     })
       .compileComponents();
   }));
@@ -63,8 +64,10 @@ describe('BookComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  describe('When It Stars', () => {
+    it('should create', () => {
+      expect(component).toBeTruthy();
+    });
   });
 
   describe('Given a dialog is open', () => {
@@ -121,80 +124,112 @@ describe('BookComponent', () => {
 
     });
 
-    it('Then clicking button book books a home', () => {
+    describe('When clicking button BOOK', () => {
+      it('Then books a home', () => {
+
+        // Arrange
+        const checkIn = el('[data-test="check-in"] input');
+        const checkOut = el('[data-test="check-out"] input');
+
+        // Act
+        // enter check in 12/20/19
+        checkIn.value = '12/20/19';
+        checkIn.dispatchEvent(new Event('input'));
+        fixture.detectChanges();
+        // enter check out 12/23/19
+        checkOut.value = '12/23/19';
+        checkOut.dispatchEvent(new Event('input'));
+        fixture.detectChanges();
+        // Click the button
+        el('[data-test="btn-book"] button').click();
+
+        // Assert
+        // data service is called to book the home chosen
+
+        expect(dataService.bookHome$).toHaveBeenCalled();
+
+      });
+
+      it('And closes the dialog', () => {
+
+        // Arrange
+        const checkIn = el('[data-test="check-in"] input');
+        const checkOut = el('[data-test="check-out"] input');
+
+        // Act
+        // enter check in 12/20/19
+        checkIn.value = '12/20/19';
+        checkIn.dispatchEvent(new Event('input'));
+        fixture.detectChanges();
+        // enter check out 12/23/19
+        checkOut.value = '12/23/19';
+        checkOut.dispatchEvent(new Event('input'));
+        fixture.detectChanges();
+        // Click the button
+        el('[data-test="btn-book"] button').click();
+
+        // Assert
+        // data service is called to book the home chosen
+
+        expect(dialogService.close).toHaveBeenCalled();
+
+      });
+
+      it('And shows notification', () => {
+
+        // Arrange
+        dataService.bookHome$.and.returnValue(of(null))
+        const checkIn = el('[data-test="check-in"] input');
+        const checkOut = el('[data-test="check-out"] input');
+
+        // Act
+        // enter check in 12/20/19
+        checkIn.value = '12/20/19';
+        checkIn.dispatchEvent(new Event('input'));
+        fixture.detectChanges();
+        // enter check out 12/23/19
+        checkOut.value = '12/23/19';
+        checkOut.dispatchEvent(new Event('input'));
+        fixture.detectChanges();
+        // Click the button
+        el('[data-test="btn-book"] button').click();
+
+        // Assert
+        // data service is called to book the home chosen
+
+        expect(notificationService.open).toHaveBeenCalled();
+
+      });
+
+    });
+
+
+  });
+
+
+  describe('When date are invalid', () => {
+    it('Then it shows total as 0', () => {
 
       // Arrange
       const checkIn = el('[data-test="check-in"] input');
       const checkOut = el('[data-test="check-out"] input');
+      const total = el('[data-test="total"]');
 
       // Act
       // enter check in 12/20/19
-      checkIn.value = '12/20/19';
+      checkIn.value = '';
       checkIn.dispatchEvent(new Event('input'));
       fixture.detectChanges();
       // enter check out 12/23/19
-      checkOut.value = '12/23/19';
+      checkOut.value = '';
       checkOut.dispatchEvent(new Event('input'));
       fixture.detectChanges();
-      // Click the button
-      el('[data-test="btn-book"] button').click();
-
       // Assert
-      // data service is called to book the home chosen
-
-      expect(dataService.bookHome$).toHaveBeenCalled();
-
-    });
-
-    it('Then clicking button book closes the dialog', () => {
-
-      // Arrange
-      const checkIn = el('[data-test="check-in"] input');
-      const checkOut = el('[data-test="check-out"] input');
-
-      // Act
-      // enter check in 12/20/19
-      checkIn.value = '12/20/19';
-      checkIn.dispatchEvent(new Event('input'));
-      fixture.detectChanges();
-      // enter check out 12/23/19
-      checkOut.value = '12/23/19';
-      checkOut.dispatchEvent(new Event('input'));
-      fixture.detectChanges();
-      // Click the button
-      el('[data-test="btn-book"] button').click();
-
-      // Assert
-      // data service is called to book the home chosen
-
-      expect(dialogService.close).toHaveBeenCalled();
+      // total shows 3x125=375
+      expect(total.textContent).toContain(0);
 
     });
   });
 
-  it('Then clicking button book shows notification', () => {
 
-    // Arrange
-    dataService.bookHome$.and.returnValue(of(null))
-    const checkIn = el('[data-test="check-in"] input');
-    const checkOut = el('[data-test="check-out"] input');
-
-    // Act
-    // enter check in 12/20/19
-    checkIn.value = '12/20/19';
-    checkIn.dispatchEvent(new Event('input'));
-    fixture.detectChanges();
-    // enter check out 12/23/19
-    checkOut.value = '12/23/19';
-    checkOut.dispatchEvent(new Event('input'));
-    fixture.detectChanges();
-    // Click the button
-    el('[data-test="btn-book"] button').click();
-
-    // Assert
-    // data service is called to book the home chosen
-
-    expect(notificationService.open).toHaveBeenCalled();
-
-  });
 });

@@ -1,12 +1,24 @@
-<div data-test="title">{{data.home.title}}</div>
+<div data-test="title">Book {{data.home.title}}</div>
 <div data-test="price">${{data.home.price}} per night</div>
 <div data-test="check-in">
-  <input name="checkIn" [(ngModel)]="checkIn">
+  <mat-form-field>
+    <input matInput [(ngModel)]="checkIn" [matDatepicker]="checkInPicker"
+           placeholder="Choose a start date!">
+    <mat-datepicker-toggle matSuffix [for]="checkInPicker"></mat-datepicker-toggle>
+    <mat-datepicker #checkInPicker></mat-datepicker>
+  </mat-form-field>
 </div>
 <div data-test="check-out">
-  <input name="checkOut" [(ngModel)]="checkOut">
+  <mat-form-field>
+    <input matInput [(ngModel)]="checkOut" [matDatepicker]="checkOutPicker"
+           placeholder="Choose a date!">
+    <mat-datepicker-toggle matSuffix [for]="checkOutPicker"></mat-datepicker-toggle>
+    <mat-datepicker #checkOutPicker></mat-datepicker>
+  </mat-form-field>
 </div>
 <div data-test="total">
-  {{calculateTotal(checkIn,checkOut)}}
+  ${{calculateTotal(checkIn,checkOut)}}
 </div>
-<div data-test="btn-book"><button (click)="bookHome(data.home)">Book</button></div>
+<div data-test="btn-book" *ngIf="total>0">
+  <button class="uk-button uk-button-secondary" (click)="bookHome(data.home)">Book</button>
+</div>

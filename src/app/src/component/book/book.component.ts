@@ -1,7 +1,8 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, AfterContentChecked, ChangeDetectorRef } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import * as moment from 'moment';
+
 
 import { DataService } from '../../services/data.service';
 
@@ -10,11 +11,12 @@ import { DataService } from '../../services/data.service';
   templateUrl: './book.component.html',
   styleUrls: ['./book.component.scss']
 })
-export class BookComponent implements OnInit {
+export class BookComponent implements OnInit, AfterContentChecked {
   // #region Properties (2)
 
   public checkIn: any;
   public checkOut: any;
+  public total: number;
 
   // #endregion Properties (2)
 
@@ -24,14 +26,18 @@ export class BookComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any,
     private dataService: DataService,
     public dialogRef: MatDialogRef<BookComponent>,
-    private snackBar: MatSnackBar) { }
+    private snackBar: MatSnackBar,
+    private changeDetector: ChangeDetectorRef) { }
 
   // #endregion Constructors (1)
 
   // #region Public Methods (1)
 
   public ngOnInit() {
-    console.log(this.data);
+    this.total = 0;
+  }
+  public ngAfterContentChecked(): void {
+    this.changeDetector.detectChanges();
   }
 
   // #endregion Public Methods (1)
@@ -43,9 +49,12 @@ export class BookComponent implements OnInit {
     const checkOutDate = moment(checkOut, 'MM-DD-YY');
 
     const nights = checkOutDate.diff(checkInDate, 'days');
+    this.total = nights * this.data.home.price || 0;
     // console.log('%s-%s-%s', checkIn, checkOut, nights);
-
-    return nights * this.data.home.price;
+    if (!this.total || this.total < 0 || this.total >= 900000) {
+      this.total = 0;
+    }
+    return this.total;
   }
 
   // #endregion Private Methods (1)
