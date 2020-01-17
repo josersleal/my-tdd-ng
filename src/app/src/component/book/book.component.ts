@@ -1,6 +1,8 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import * as moment from 'moment';
+
 import { DataService } from '../../services/data.service';
 
 @Component({
@@ -21,7 +23,8 @@ export class BookComponent implements OnInit {
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
     private dataService: DataService,
-    public dialogRef: MatDialogRef<BookComponent>) { }
+    public dialogRef: MatDialogRef<BookComponent>,
+    private snackBar: MatSnackBar) { }
 
   // #endregion Constructors (1)
 
@@ -54,6 +57,9 @@ export class BookComponent implements OnInit {
     this.dataService.bookHome$(home)
       .subscribe(() => {
         this.dialogRef.close();
+        this.snackBar.open(home.title + ' Booked!', null, {
+          duration: 2000
+        });
       });
   }
 }

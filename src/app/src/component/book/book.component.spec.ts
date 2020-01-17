@@ -7,6 +7,8 @@ import { spyOnClass } from 'jasmine-es6-spies';
 import { DataService } from '../../services/data.service';
 import { BookComponent } from './book.component';
 import { DialogService } from '../../services/dialog.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { of } from 'rxjs/internal/observable/of';
 
 
 export class MatDialogRefMock {
@@ -16,9 +18,11 @@ describe('BookComponent', () => {
   let component: BookComponent;
   let fixture: ComponentFixture<BookComponent>;
   let dialogData: any;
-  let dataService: DataService;
+  // let dataService: DataService;
+  let dataService: jasmine.SpyObj<DataService>;
   let dialogService: jasmine.SpyObj<MatDialogRef<BookComponent>>;
-  // let dialogService: MatDialogRef<BookComponent>;
+  let notificationService: jasmine.SpyObj<MatSnackBar>;
+
 
 
   const el = (selector: string) => fixture.nativeElement.querySelector(selector);
@@ -33,10 +37,12 @@ describe('BookComponent', () => {
           provide: MAT_DIALOG_DATA, useValue: {}
         },
         { provide: MatDialogRef, useFactory: () => spyOnClass(MatDialogRef) },
+        { provide: MatSnackBar, useFactory: () => spyOnClass(MatSnackBar) },
+        { provide: DataService, useFactory: () => spyOnClass(DataService) },
         /*   {
             provide: MatDialogRef, useClass: MatDialogRefMock
           }, */
-        DataService
+        // DataService
       ]
     })
       .compileComponents();
@@ -50,7 +56,8 @@ describe('BookComponent', () => {
     dialogData.home = homeData[0];
     dataService = TestBed.get(DataService);
     dialogService = TestBed.get(MatDialogRef);
-    spyOn(dataService, 'bookHome$').and.stub();
+    notificationService = TestBed.get(MatSnackBar);
+    // spyOn(dataService, 'bookHome$').and.stub();
     // spyOn(dialogService, 'close').and.stub();
 
     fixture.detectChanges();
@@ -165,5 +172,29 @@ describe('BookComponent', () => {
     });
   });
 
+  it('Then clicking button book shows notification', () => {
 
+    // Arrange
+    dataService.bookHome$.and.returnValue(of(null))
+    const checkIn = el('[data-test="check-in"] input');
+    const checkOut = el('[data-test="check-out"] input');
+
+    // Act
+    // enter check in 12/20/19
+    checkIn.value = '12/20/19';
+    checkIn.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+    // enter check out 12/23/19
+    checkOut.value = '12/23/19';
+    checkOut.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+    // Click the button
+    el('[data-test="btn-book"] button').click();
+
+    // Assert
+    // data service is called to book the home chosen
+
+    expect(notificationService.open).toHaveBeenCalled();
+
+  });
 });
