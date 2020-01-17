@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 
 import { DataService } from '../../services/data.service';
+import { DialogService } from '../../services/dialog.service';
+import { BookComponent } from '../../component/book/book.component';
 
 @Component({
   selector: 'app-homes',
@@ -9,8 +11,8 @@ import { DataService } from '../../services/data.service';
 })
 export class HomesComponent implements OnInit {
   public homes$: any;
-  // dataService: DataService;
-  constructor(private dataService: DataService) { }
+
+  constructor(private dataService: DataService, private dialogService: DialogService) { }
 
   ngOnInit() {
     this.homes$ = this.dataService.getHomes$();
@@ -31,6 +33,13 @@ export class HomesComponent implements OnInit {
         location: 'Chicago'
       }
     ]) */
+  }
+
+  public openDialog(home: any) {
+    this.dialogService.open(BookComponent, {
+      width: '250px',
+      data: { home }
+    });
   }
 
 }

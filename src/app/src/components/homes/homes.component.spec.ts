@@ -6,19 +6,23 @@ import { spyOnClass } from 'jasmine-es6-spies';
 import { DataService } from '../../services/data.service';
 import { of } from 'rxjs/internal/observable/of';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { DialogService } from '../../services/dialog.service';
+import { FormsModule } from '@angular/forms';
+import { MatDialogModule } from '@angular/material/dialog';
 
 describe('HomesComponent', () => {
   let component: HomesComponent;
   let fixture: ComponentFixture<HomesComponent>;
   let dataService: DataService; // = jasmine.SpyObj<DataService>();
+  let dialogService: DialogService;
   let homeData: Array<any>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
       declarations: [HomesComponent],
-      providers: [DataService],
-      imports: [HttpClientTestingModule]
+      providers: [DataService, DialogService],
+      imports: [HttpClientTestingModule, MatDialogModule]
       // providers: [{ provide: DataService, useFactory: () => spyOnClass(DataService) }]
     })
       .compileComponents();
@@ -28,24 +32,11 @@ describe('HomesComponent', () => {
     fixture = TestBed.createComponent(HomesComponent);
     component = fixture.componentInstance;
     dataService = TestBed.get(DataService);
-    homeData = [
-      {
-        title: 'Home 1',
-        image: 'assets/listing.jpg',
-        location: 'New York'
-      },
-      {
-        title: 'Home 2',
-        image: 'assets/listing.jpg',
-        location: 'Boston'
-      },
-      {
-        title: 'Home 3',
-        image: 'assets/listing.jpg',
-        location: 'Chicago'
-      }
-    ];
+    dialogService = TestBed.get(DialogService);
+
+    homeData = require('../../../../assets/homes.json');
     spyOn(dataService, 'getHomes$').and.returnValue(of(homeData));
+    spyOn(dialogService, 'open').and.stub();
     fixture.detectChanges();
   });
   describe('When starting', () => {
@@ -83,8 +74,6 @@ describe('HomesComponent', () => {
       const image = elHome.querySelector('[data-test="image"]');
       expect(image).toBeTruthy();
       const location = elHome.querySelector('[data-test="location"]');
-      debugger;
-
       expect(location.innerText).toContain('New York');
     });
 
@@ -96,5 +85,23 @@ describe('HomesComponent', () => {
       expect(btn).toBeTruthy();
     });
 
+    describe('When clicking the  Book button', () => {
+      it('Then it shows a dialog  ', () => {
+
+        // Arrange
+
+        // grab the button
+        const btn = fixture.nativeElement.querySelector('[data-test="home"] button');
+
+        // Act
+        // click the button
+        btn.click();
+
+        // Assert
+        // assure dialog was opened via a service
+        expect(dialogService.open).toHaveBeenCalled();
+
+      });
+    });
   });
 });
