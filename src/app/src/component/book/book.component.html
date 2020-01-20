@@ -1,5 +1,7 @@
-<div data-test="title">Book {{data.home.title}}</div>
-<div data-test="price">${{data.home.price}} per night</div>
+<div mat-dialog-title data-test="title">Book {{data.home.title}}</div>
+<div class="uk-margin" data-test="price"><span
+        class="uk-text-large uk-text-bold uk-text-primary">${{data.home.price}}</span> per
+  night</div>
 <div data-test="check-in">
   <mat-form-field>
     <input matInput [(ngModel)]="checkIn" [matDatepicker]="checkInPicker"
@@ -16,9 +18,10 @@
     <mat-datepicker #checkOutPicker></mat-datepicker>
   </mat-form-field>
 </div>
-<div data-test="total">
+<div class="uk-text-bold" data-test="total">
   ${{calculateTotal(checkIn,checkOut)}}
 </div>
 <div data-test="btn-book" *ngIf="total>0">
-  <button class="uk-button uk-button-secondary" (click)="bookHome(data.home)">Book</button>
+  <button class="uk-button uk-button-primary uk-button-large uk-width-1-1"
+          (click)="bookHome(data.home)">Book</button>
 </div>
